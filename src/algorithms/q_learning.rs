@@ -1,3 +1,4 @@
+use std::time::{SystemTime, UNIX_EPOCH};
 use crate::contracts::model_free_env::ModelFreeEnv;
 use rand::prelude::SliceRandom;
 use rand::Rng;
@@ -11,6 +12,8 @@ pub fn q_learning<TEnv: ModelFreeEnv>(
     let mut q_values = vec![vec![0.0; TEnv::num_actions()]; TEnv::num_states()];
     let mut env = TEnv::new();
     let mut rng = rand::thread_rng();
+
+    let start_time = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_nanos() as f64;
 
     for _ in 0..num_episodes {
         env.reset();
@@ -30,6 +33,7 @@ pub fn q_learning<TEnv: ModelFreeEnv>(
             q_values[s][a] += learning_rate * (r + gamma * q_s_p - q_values[s][a]);
         }
     }
-
+    
+    println!("time : {}", SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_nanos() as f64 - start_time);
     q_values
 }

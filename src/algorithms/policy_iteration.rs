@@ -1,6 +1,8 @@
+use std::time::{SystemTime, UNIX_EPOCH};
 use crate::contracts::mdp_env::MDPEnv;
 
 pub fn policy_iteration<TEnv: MDPEnv>(gamma: f32, theta: f32) -> (Vec<usize>, Vec<f32>) {
+
     let mut pi = vec![0usize; TEnv::num_states()];
     let mut value_function = vec![0.0; TEnv::num_states()];
 
@@ -25,6 +27,8 @@ pub fn policy_iteration<TEnv: MDPEnv>(gamma: f32, theta: f32) -> (Vec<usize>, Ve
             }
         }
     }
+
+    let start_time = SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_nanos() as f64;
 
     loop {
         // Policy evaluation
@@ -78,5 +82,6 @@ pub fn policy_iteration<TEnv: MDPEnv>(gamma: f32, theta: f32) -> (Vec<usize>, Ve
             break;
         }
     }
+    println!("time : {}", SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_nanos() as f64 - start_time);
     (pi, value_function)
 }
