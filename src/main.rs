@@ -10,11 +10,30 @@ pub mod contracts {
 
 pub mod envs {
     pub mod line_world;
-
+    pub mod grid_world;
     pub mod secret;
 }
 
 fn main() {
+    println!("Policy Iteration on GridWorld(4x4)...");
+    let (pi, value_function) = algorithms::policy_iteration::policy_iteration::<envs::grid_world::GridWorld<4, 4>>(0.999, 0.001);
+    for (s, a) in pi.iter().enumerate() {
+        println!("π(s={}) = {}", s, a);
+    }
+    println!();
+    for (s, v) in value_function.iter().enumerate() {
+        println!("V(s={}) = {}", s, v);
+    }
+    println!();
+    println!();
+
+    println!("Q-Learning on GridWorld(4x4)...");
+    let q_values = algorithms::q_learning::q_learning::<envs::grid_world::GridWorld<4, 4>>(10_000, 0.1, 0.999, 1.0);
+    for (s, q_s) in q_values.iter().enumerate() {
+        for (a, q) in q_s.iter().enumerate() {
+            println!("Q(s={}, a={}) = {}", s, a, q);
+        }
+    }
     println!("Policy Iteration on LineWorld(5)...");
     let (pi, value_function) = algorithms::policy_iteration::policy_iteration::<envs::line_world::LineWorld<5>>(0.999, 0.001);
     for (s, a) in pi.iter().enumerate() {
