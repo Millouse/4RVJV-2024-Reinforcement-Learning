@@ -35,7 +35,7 @@ pub fn value_iteration<TEnv: MDPEnv>(gamma: f32, theta: f32) -> (Vec<usize>, Vec
         let mut delta = 0.0f32;
         for s in 0..num_states {
             let v = value_function[s];
-            let mut actions = vec![];
+            let mut actions = vec![0.0; num_actions];
             for a in 0..num_actions{
                 let mut total = 0f32;
                 let s_index = s * num_actions * num_states * num_rewards;
@@ -46,9 +46,16 @@ pub fn value_iteration<TEnv: MDPEnv>(gamma: f32, theta: f32) -> (Vec<usize>, Vec
                         total += cached_transition_probabilities[index] * (rewards[r_index] + gamma * value_function[s_p]);
                     }
                 }
-                actions.push(total);
+                actions[a] = total;
             }
-            value_function[s] = *actions.iter().max_by(|x, y| x.abs().partial_cmp(&y.abs()).unwrap()).unwrap();
+
+            value_function[s] = actions[0];
+            for i in actions{
+                if i > value_function[s] {
+                    value_function[s] = i;
+                }
+            }
+            
             delta = delta.max((v - value_function[s]).abs());
         }
         if delta < theta {

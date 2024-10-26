@@ -16,8 +16,9 @@ pub mod envs {
 }
 
 fn main() {
-    println!("Policy Iteration on LineWorld(5)...");
-    let (pi, value_function) = algorithms::policy_iteration::policy_iteration::<envs::line_world::LineWorld<5>>(0.999, 0.001);
+
+    println!("Value Iteration on LineWorld(50)...");
+    let (pi, value_function) = algorithms::value_iteration::value_iteration::<envs::line_world::LineWorld<50>>(0.999, 0.001);
     for (s, a) in pi.iter().enumerate() {
         println!("π(s={}) = {}", s, a);
     }
@@ -28,13 +29,25 @@ fn main() {
     println!();
     println!();
 
-    println!("Q-Learning on LineWorld(5)...");
-    let q_values = algorithms::q_learning::q_learning::<envs::line_world::LineWorld<5>>(10_000, 0.1, 0.999, 1.0);
-    for (s, q_s) in q_values.iter().enumerate() {
-        for (a, q) in q_s.iter().enumerate() {
-            println!("Q(s={}, a={}) = {}", s, a, q);
-        }
+    println!("Policy Iteration on LineWorld(50)...");
+    let (pi, value_function) = algorithms::policy_iteration::policy_iteration::<envs::line_world::LineWorld<50>>(0.999, 0.001);
+    for (s, a) in pi.iter().enumerate() {
+        println!("π(s={}) = {}", s, a);
     }
+    println!();
+    for (s, v) in value_function.iter().enumerate() {
+        println!("V(s={}) = {}", s, v);
+    }
+    println!();
+    println!();
+
+    // println!("Q-Learning on LineWorld(5)...");
+    // let q_values = algorithms::q_learning::q_learning::<envs::line_world::LineWorld<5>>(10_000, 0.1, 0.999, 1.0);
+    // for (s, q_s) in q_values.iter().enumerate() {
+    //     for (a, q) in q_s.iter().enumerate() {
+    //         println!("Q(s={}, a={}) = {}", s, a, q);
+    //     }
+    // }
 
     // //Be careful, this will take a long time to run if you uncomment this
     // println!("Policy Iteration on SecretEnv0... (be careful, it will be very long as is)");
@@ -45,27 +58,27 @@ fn main() {
     // println!();
     // println!();
 
-    println!("Q-Learning on SecretEnv0...");
-    let q_values = algorithms::q_learning::q_learning::<envs::secret::SecretEnv0>(10_000, 0.1, 0.999, 1.0);
-    for (a, q) in q_values[0].iter().enumerate() {
-        println!("Q(s=0, a={}) = {}", a, q);
-    }
-
-    println!("Q-Learning on SecretEnv1...");
-    let q_values = algorithms::q_learning::q_learning::<envs::secret::SecretEnv1>(10_000, 0.1, 0.999, 1.0);
-    for (a, q) in q_values[0].iter().enumerate() {
-        println!("Q(s=0, a={}) = {}", a, q);
-    }
-
-    println!("Q-Learning on SecretEnv2...");
-    let q_values = algorithms::q_learning::q_learning::<envs::secret::SecretEnv2>(10_000, 0.1, 0.999, 1.0);
-    for (a, q) in q_values[0].iter().enumerate() {
-        println!("Q(s=0, a={}) = {}", a, q);
-    }
-
-    println!("Q-Learning on SecretEnv3...");
-    let q_values = algorithms::q_learning::q_learning::<envs::secret::SecretEnv3>(10_000, 0.1, 0.999, 1.0);
-    for (a, q) in q_values[0].iter().enumerate() {
-        println!("Q(s=0, a={}) = {}", a, q);
-    }
+    // println!("Q-Learning on SecretEnv0...");
+    // let q_values = algorithms::q_learning::q_learning::<envs::secret::SecretEnv0>(10_000, 0.1, 0.999, 1.0);
+    // for (a, q) in q_values[0].iter().enumerate() {
+    //     println!("Q(s=0, a={}) = {}", a, q);
+    // }
+    //
+    // println!("Q-Learning on SecretEnv1...");
+    // let q_values = algorithms::q_learning::q_learning::<envs::secret::SecretEnv1>(10_000, 0.1, 0.999, 1.0);
+    // for (a, q) in q_values[0].iter().enumerate() {
+    //     println!("Q(s=0, a={}) = {}", a, q);
+    // }
+    //
+    // println!("Q-Learning on SecretEnv2...");
+    // let q_values = algorithms::q_learning::q_learning::<envs::secret::SecretEnv2>(10_000, 0.1, 0.999, 1.0);
+    // for (a, q) in q_values[0].iter().enumerate() {
+    //     println!("Q(s=0, a={}) = {}", a, q);
+    // }
+    //
+    // println!("Q-Learning on SecretEnv3...");
+    // let q_values = algorithms::q_learning::q_learning::<envs::secret::SecretEnv3>(10_000, 0.1, 0.999, 1.0);
+    // for (a, q) in q_values[0].iter().enumerate() {
+    //     println!("Q(s=0, a={}) = {}", a, q);
+    // }
 }
