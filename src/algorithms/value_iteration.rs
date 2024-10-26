@@ -50,12 +50,15 @@ pub fn value_iteration<TEnv: MDPEnv>(gamma: f32, theta: f32) -> (Vec<usize>, Vec
             }
 
             value_function[s] = actions[0];
+            let mut j = 0;
             for i in actions{
                 if i > value_function[s] {
+                    pi[s] = j;
                     value_function[s] = i;
                 }
+                j += 1;
             }
-            
+
             delta = delta.max((v - value_function[s]).abs());
         }
         if delta < theta {
