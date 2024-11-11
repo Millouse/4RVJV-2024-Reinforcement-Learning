@@ -2,11 +2,9 @@ use rand::Rng;
 use crate::contracts::mdp_env::MDPEnv;
 use crate::contracts::model_free_env::ModelFreeEnv;
 
-
 pub struct GridWorld<const ROWS: usize, const COLUMNS: usize> {
     current_row: usize,
     current_column: usize,
-
 }
 
 impl<const ROWS: usize, const COLUMNS: usize> MDPEnv for GridWorld<ROWS, COLUMNS> {
@@ -44,22 +42,46 @@ impl<const ROWS: usize, const COLUMNS: usize> MDPEnv for GridWorld<ROWS, COLUMNS
         match action {
             0 => { // Action "up"
                 if row > 0 && next_row == row - 1 && next_col == col {
-                    return 1.0; // Déplacement vers le haut
+                    if reward_index == 0 {
+                        return 0.5; // Moins probable si c'est une récompense négative
+                    } else if reward_index == 1 {
+                        return 0.7; // Moyennement probable pour une case neutre
+                    } else if reward_index == 2 {
+                        return 0.9; // Plus probable si c'est une récompense positive
+                    }
                 }
             },
             1 => { // Action "down"
                 if row < (ROWS - 1) && next_row == row + 1 && next_col == col {
-                    return 1.0; // Déplacement vers le bas
+                    if reward_index == 0 {
+                        return 0.6;
+                    } else if reward_index == 1 {
+                        return 0.8;
+                    } else if reward_index == 2 {
+                        return 0.95;
+                    }
                 }
             },
             2 => { // Action "left"
                 if col > 0 && next_row == row && next_col == col - 1 {
-                    return 1.0; // Déplacement vers la gauche
+                    if reward_index == 0 {
+                        return 0.4;
+                    } else if reward_index == 1 {
+                        return 0.75;
+                    } else if reward_index == 2 {
+                        return 0.85;
+                    }
                 }
             },
             3 => { // Action "right"
                 if col < (COLUMNS - 1) && next_row == row && next_col == col + 1 {
-                    return 1.0; // Déplacement vers la droite
+                    if reward_index == 0 {
+                        return 0.3;
+                    } else if reward_index == 1 {
+                        return 0.7;
+                    } else if reward_index == 2 {
+                        return 0.9;
+                    }
                 }
             },
             _ => return 0.0, // Action non reconnue
@@ -67,7 +89,6 @@ impl<const ROWS: usize, const COLUMNS: usize> MDPEnv for GridWorld<ROWS, COLUMNS
 
         0.0 // Retourne 0 pour toutes les autres transitions non valides
     }
-
 }
 
 impl<const ROWS: usize, const COLUMNS: usize> ModelFreeEnv for GridWorld<ROWS, COLUMNS> {
@@ -105,11 +126,11 @@ impl<const ROWS: usize, const COLUMNS: usize> ModelFreeEnv for GridWorld<ROWS, C
 
     fn score(&self) -> f32 {
         if self.current_row == 0 && self.current_column == COLUMNS - 1 {
-            -3.0 // Coin supérieur droit
+            GridWorld::<ROWS, COLUMNS>::reward(0) // Coin supérieur droit
         } else if self.current_row == ROWS - 1 && self.current_column == 0 {
-            1.0 // Coin inférieur gauche
+            GridWorld::<ROWS, COLUMNS>::reward(2) // Coin inférieur gauche
         } else {
-            0.0 // Autres cases
+            GridWorld::<ROWS, COLUMNS>::reward(1) // Autres cases
         }
     }
 
@@ -147,7 +168,8 @@ impl<const ROWS: usize, const COLUMNS: usize> ModelFreeEnv for GridWorld<ROWS, C
 
     fn step(&mut self, action: usize) {
         if self.is_forbidden(action) {
-            eprintln!("Forbidden action");
+            eprintln!("Forbidden action: {:?}", action);  // Affiche l'action interdite
+            eprintln!("Current position: ({}, {})", self.current_row, self.current_column);
             std::process::exit(42);
         }
 
