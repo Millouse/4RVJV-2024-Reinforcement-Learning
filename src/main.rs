@@ -14,6 +14,7 @@ pub mod envs {
     pub mod line_world;
     pub mod grid_world;
     pub mod secret;
+    pub mod rock_paper_scissors;
 }
 
 fn main() {
@@ -29,48 +30,56 @@ fn main() {
     println!();
     println!();
 
-    println!("Q-Learning on GridWorld(4x4)...");
-    let q_values = algorithms::q_learning::q_learning::<envs::grid_world::GridWorld<4, 4>>(10_000, 0.1, 0.999, 1.0);
+    println!("Q-Learning on Rock Paper Scissors...");
+    let q_values = algorithms::q_learning::q_learning::<envs::rock_paper_scissors::RockPaperScissors>(10_000_000, 0.1, 0.999, 1.0);
     for (s, q_s) in q_values.iter().enumerate() {
         for (a, q) in q_s.iter().enumerate() {
             println!("Q(s={}, a={}) = {}", s, a, q);
         }
     }
+
+    // println!("Q-Learning on GridWorld(4x4)...");
+    // let q_values = algorithms::q_learning::q_learning::<envs::grid_world::GridWorld<4, 4>>(10_000, 0.1, 0.999, 1.0);
+    // for (s, q_s) in q_values.iter().enumerate() {
+    //     for (a, q) in q_s.iter().enumerate() {
+    //         println!("Q(s={}, a={}) = {}", s, a, q);
+    //     }
+    // }
     println!("Monte Carlo Exploring Starts on GridWorld(4x4)...");
-    let q_values = algorithms::monte_carlo_exploring_starts::monte_carlo_exploring_starts::<envs::grid_world::GridWorld<4, 4>>(15_000, 0.999);
+    let q_values = algorithms::monte_carlo_exploring_starts::monte_carlo_exploring_starts::<envs::rock_paper_scissors::RockPaperScissors>(1_500_000, 0.999);
     for (s, q_s) in q_values.iter().enumerate() {
         for (a, q) in q_s.iter().enumerate() {
             println!("Q(s={}, a={}) = {}", s, a, q);
         }
     }
     // Calcul et affichage de la politique optimale π(s)
-    let pi: Vec<usize> = q_values.iter().map(|q_s| {
-        q_s.iter().enumerate().max_by(|(_, q1), (_, q2)| q1.partial_cmp(q2).unwrap()).unwrap().0
-    }).collect();
+    // let pi: Vec<usize> = q_values.iter().map(|q_s| {
+    //     q_s.iter().enumerate().max_by(|(_, q1), (_, q2)| q1.partial_cmp(q2).unwrap()).unwrap().0
+    // }).collect();
 
-    println!("\nPolitique optimale π(s):");
-    for (s, a) in pi.iter().enumerate() {
-        println!("π(s={}) = {}", s, a);
-    }
-    println!();
-
-    println!("Monte Carlo Exploring Starts on LineWorld(5)...");
-    let q_values = algorithms::monte_carlo_exploring_starts::monte_carlo_exploring_starts::<envs::line_world::LineWorld<5>>(10_000, 0.999);
-    for (s, q_s) in q_values.iter().enumerate() {
-        for (a, q) in q_s.iter().enumerate() {
-            println!("Q(s={}, a={}) = {}", s, a, q);
-        }
-    }
-    // Calcul et affichage de la politique optimale π(s)
-    let pi: Vec<usize> = q_values.iter().map(|q_s| {
-        q_s.iter().enumerate().max_by(|(_, q1), (_, q2)| q1.partial_cmp(q2).unwrap()).unwrap().0
-    }).collect();
-
-    println!("\nPolitique optimale π(s):");
-    for (s, a) in pi.iter().enumerate() {
-        println!("π(s={}) = {}", s, a);
-    }
-    println!();
+    // println!("\nPolitique optimale π(s):");
+    // for (s, a) in pi.iter().enumerate() {
+    //     println!("π(s={}) = {}", s, a);
+    // }
+    // println!();
+    //
+    // println!("Monte Carlo Exploring Starts on LineWorld(5)...");
+    // let q_values = algorithms::monte_carlo_exploring_starts::monte_carlo_exploring_starts::<envs::line_world::LineWorld<5>>(10_000, 0.999);
+    // for (s, q_s) in q_values.iter().enumerate() {
+    //     for (a, q) in q_s.iter().enumerate() {
+    //         println!("Q(s={}, a={}) = {}", s, a, q);
+    //     }
+    // }
+    // // Calcul et affichage de la politique optimale π(s)
+    // let pi: Vec<usize> = q_values.iter().map(|q_s| {
+    //     q_s.iter().enumerate().max_by(|(_, q1), (_, q2)| q1.partial_cmp(q2).unwrap()).unwrap().0
+    // }).collect();
+    //
+    // println!("\nPolitique optimale π(s):");
+    // for (s, a) in pi.iter().enumerate() {
+    //     println!("π(s={}) = {}", s, a);
+    // }
+    // println!();
     // println!("Policy Iteration on LineWorld(5)...");
     // let (pi, value_function) = algorithms::policy_iteration::policy_iteration::<envs::line_world::LineWorld<5>>(0.999, 0.001);
     // for (s, a) in pi.iter().enumerate() {
