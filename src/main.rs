@@ -1,5 +1,6 @@
 pub mod algorithms {
     pub mod policy_iteration;
+    pub mod value_iteration;
     pub mod q_learning;
     pub mod monte_carlo_exploring_starts;
 }
