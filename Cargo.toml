@@ -1,0 +1,8 @@
+[package]
+name = "_2025_5a_rvjv_full_rust_template"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rand = "0.8.5"
+libloading = "0.8.5"
