@@ -3,6 +3,7 @@ pub mod algorithms {
     pub mod value_iteration;
     pub mod q_learning;
     pub mod monte_carlo_exploring_starts;
+    pub mod sarsa;
 }
 
 pub mod contracts {
@@ -69,6 +70,14 @@ fn main() {
     println!("\nPolitique optimale π(s):");
     for (s, a) in pi.iter().enumerate() {
         println!("π(s={}) = {}", s, a);
+    }
+
+    println!("SARSA on GridWorld(4x4)...");
+    let q_values = algorithms::sarsa::sarsa::<envs::grid_world::GridWorld<4, 4>>(10_000, 0.1, 0.999, 1.0);
+    for (s, q_s) in q_values.iter().enumerate() {
+        for (a, q) in q_s.iter().enumerate() {
+            println!("Q(s={}, a={}) = {}", s, a, q);
+        }
     }
     println!();
     // println!("Policy Iteration on LineWorld(5)...");
