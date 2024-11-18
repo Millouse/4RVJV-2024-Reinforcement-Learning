@@ -15,6 +15,7 @@ pub mod envs {
     pub mod line_world;
     pub mod grid_world;
     pub mod secret;
+    pub mod mounty_hall_3;
 }
 
 fn main() {
@@ -72,14 +73,36 @@ fn main() {
         println!("π(s={}) = {}", s, a);
     }
 
-    println!("SARSA on GridWorld(4x4)...");
-    let q_values = algorithms::sarsa::sarsa::<envs::grid_world::GridWorld<4, 4>>(10_000, 0.1, 0.999, 1.0);
-    for (s, q_s) in q_values.iter().enumerate() {
-        for (a, q) in q_s.iter().enumerate() {
-            println!("Q(s={}, a={}) = {}", s, a, q);
-        }
-    }
-    println!();
+    //println!("SARSA on GridWorld(4x4)...");
+    //let q_values = algorithms::sarsa::sarsa::<envs::grid_world::GridWorld<4, 4>>(10_000, 0.1, 0.999, 1.0);
+    //for (s, q_s) in q_values.iter().enumerate() {
+    //    for (a, q) in q_s.iter().enumerate() {
+    //        println!("Q(s={}, a={}) = {}", s, a, q);
+    //    }
+    //}
+    //println!();
+
+    //println!("Policy Iteration on Monty Hall Problem...");
+
+    // Exécution de l'algorithme Policy Iteration pour le Monty Hall Problem
+    //let (pi, value_function) = algorithms::policy_iteration::policy_iteration::<envs::mounty_hall_3::MontyHall>(0.999, 0.001);
+
+    // Affichage de la politique optimale pour chaque état
+    //println!("Optimal Policy (π):");
+    //for (s, a) in pi.iter().enumerate() {
+    //    println!("π(s={}) = {}", s, a);
+    //}
+
+    //println!();
+
+    // Affichage de la fonction de valeur optimale pour chaque état
+    //println!("Optimal Value Function (V):");
+    //for (s, v) in value_function.iter().enumerate() {
+    //    println!("V(s={}) = {}", s, v);
+    //}
+
+    //println!();
+
     // println!("Policy Iteration on LineWorld(5)...");
     // let (pi, value_function) = algorithms::policy_iteration::policy_iteration::<envs::line_world::LineWorld<5>>(0.999, 0.001);
     // for (s, a) in pi.iter().enumerate() {
