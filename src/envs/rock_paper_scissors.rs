@@ -38,7 +38,7 @@ impl ModelFreeEnv for RockPaperScissors {
     }
 
     fn is_game_over(&self) -> bool {
-        self.round >= 1
+        self.round >= Self::num_states()-1
     }
 
     fn score(&self) -> f32 {
