@@ -18,22 +18,37 @@ pub fn sarsa<TEnv: ModelFreeEnv>(
     for _ in 0..num_episodes {
         env.reset();
         let mut s = env.state_id();
-        let available_actions = env.available_actions();
+        let mut available_actions = env.available_actions();
         let mut a = if rng.gen::<f32>() < epsilon {
-            *available_actions.choose(&mut rng).unwrap()
+            *available_actions.choose(&mut rng).expect("No available actions")
         } else {
-            q_values[s].iter().enumerate().max_by(|(_, q1), (_, q2)| q1.partial_cmp(q2).unwrap()).unwrap().0
+            q_values[s]
+                .iter()
+                .enumerate()
+                .filter(|(action, _)| available_actions.contains(action))
+                .max_by(|(_, q1), (_, q2)| q1.partial_cmp(q2).unwrap())
+                .map(|(action, _)| action)
+                .expect("No valid action")
         };
 
         while !env.is_game_over() {
             let previous_score = env.score();
             env.step(a);
-            let r = env.score() - previous_score;
+
             let s_p = env.state_id();
+            available_actions = env.available_actions();
+            let r = env.score() - previous_score;
+
             let a_p = if rng.gen::<f32>() < epsilon {
-                *available_actions.choose(&mut rng).unwrap()
+                *available_actions.choose(&mut rng).expect("No available actions")
             } else {
-                q_values[s_p].iter().enumerate().max_by(|(_, q1), (_, q2)| q1.partial_cmp(q2).unwrap()).unwrap().0
+                q_values[s_p]
+                    .iter()
+                    .enumerate()
+                    .filter(|(action, _)| available_actions.contains(action))
+                    .max_by(|(_, q1), (_, q2)| q1.partial_cmp(q2).unwrap())
+                    .map(|(action, _)| action)
+                    .expect("No valid action")
             };
 
             q_values[s][a] += learning_rate * (r + gamma * q_values[s_p][a_p] - q_values[s][a]);
@@ -43,6 +58,9 @@ pub fn sarsa<TEnv: ModelFreeEnv>(
         }
     }
 
-    println!("time : {}", SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_nanos() as f64 - start_time);
+    println!(
+        "time : {}",
+        SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_nanos() as f64 - start_time
+    );
     q_values
 }

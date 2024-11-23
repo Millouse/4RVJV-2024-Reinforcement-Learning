@@ -73,14 +73,14 @@ fn main() {
         println!("π(s={}) = {}", s, a);
     }
 
-    //println!("SARSA on GridWorld(4x4)...");
-    //let q_values = algorithms::sarsa::sarsa::<envs::grid_world::GridWorld<4, 4>>(10_000, 0.1, 0.999, 1.0);
-    //for (s, q_s) in q_values.iter().enumerate() {
-    //    for (a, q) in q_s.iter().enumerate() {
-    //        println!("Q(s={}, a={}) = {}", s, a, q);
-    //    }
-    //}
-    //println!();
+    println!("SARSA on GridWorld(4x4)...");
+    let q_values = algorithms::sarsa::sarsa::<envs::grid_world::GridWorld<4, 4>>(10_000, 0.1, 0.999, 1.0);
+    for (s, q_s) in q_values.iter().enumerate() {
+        for (a, q) in q_s.iter().enumerate() {
+            println!("Q(s={}, a={}) = {}", s, a, q);
+        }
+    }
+    println!();
 
     //println!("Policy Iteration on Monty Hall Problem...");
 
