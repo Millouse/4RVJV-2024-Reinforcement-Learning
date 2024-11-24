@@ -1,14 +1,16 @@
-﻿use std::time::{SystemTime, UNIX_EPOCH};
+use std::time::{SystemTime, UNIX_EPOCH};
 use crate::contracts::model_free_env::ModelFreeEnv;
-use rand::prelude::SliceRandom;
+use rand::prelude::{ThreadRng, Rng, SliceRandom};
 use std::collections::HashSet;
 
-pub fn monte_carlo_exploring_starts<TEnv: ModelFreeEnv>(
+pub fn on_policy_monte_carlos<TEnv: ModelFreeEnv>(
     num_episodes: usize,
     gamma: f32,
+    epsilon: f32, // epsilon pour epsilon-greedy
 ) -> (Vec<Vec<f32>>, Vec<usize>) {  // Retourne à la fois les valeurs Q et la politique pi
     let mut q_values = vec![vec![0.0; TEnv::num_actions()]; TEnv::num_states()];
     let mut returns = vec![vec![]; TEnv::num_states()]; // Historique des retours pour chaque état-action
+    let mut pi = vec![0; TEnv::num_states()];  // Politique pour chaque état
     let mut env = TEnv::new();
     let mut rng = rand::thread_rng();
 
@@ -17,22 +19,18 @@ pub fn monte_carlo_exploring_starts<TEnv: ModelFreeEnv>(
     for _ in 0..num_episodes {
         env.reset();
 
-        // Initialisation des épisodes avec des états et actions aléatoires
         let s = env.state_id();
-        let available_actions = env.available_actions();
-        let a = *available_actions.choose(&mut rng).unwrap(); // Choisir une action aléatoire pour "exploring starts"
+        let a = epsilon_greedy_action(&q_values, s, epsilon, &mut rng);
 
-        let mut episode = vec![(s, a)]; // Episode sous forme (état, action)
+        let mut episode = vec![(s, a)];
 
         while !env.is_game_over() {
             let s = env.state_id();
-            let available_actions = env.available_actions();
-            let a = *available_actions.choose(&mut rng).unwrap(); // Choisir une action aléatoire
+            let a = epsilon_greedy_action(&q_values, s, epsilon, &mut rng);
             env.step(a);
             episode.push((s, a));
         }
 
-        // Calculer la somme des récompenses futures pour cet épisode
         let mut G = 0.0;
         let mut visited = HashSet::new();
         for &(state, action) in episode.iter().rev() {
@@ -41,20 +39,16 @@ pub fn monte_carlo_exploring_starts<TEnv: ModelFreeEnv>(
             }
             visited.insert((state, action));
 
-            // Récompense immédiate : ici on suppose que la fonction score() donne la récompense de l'étape
             let reward = env.score();
 
             G = gamma * G + reward;
 
-            // Mettre à jour les valeurs de q
             let q = &mut q_values[state][action];
             returns[state].push(G);
             *q = returns[state].iter().sum::<f32>() / returns[state].len() as f32;
         }
     }
 
-    // Mise à jour de la politique pi après tous les épisodes
-    let mut pi = vec![0; TEnv::num_states()];  // Politique pour chaque état (choisir l'action avec max Q)
     for state in 0..TEnv::num_states() {
         let best_action = (0..TEnv::num_actions())
             .max_by(|&a, &b| q_values[state][a].partial_cmp(&q_values[state][b]).unwrap())
@@ -64,5 +58,24 @@ pub fn monte_carlo_exploring_starts<TEnv: ModelFreeEnv>(
 
     println!("time : {}", SystemTime::now().duration_since(UNIX_EPOCH).unwrap().as_nanos() as f64 - start_time);
 
-    (q_values, pi)  // Retourne aussi la politique pi
+    (q_values, pi)
+}
+
+fn epsilon_greedy_action(
+    q_values: &[Vec<f32>],
+    state: usize,
+    epsilon: f32,
+    rng: &mut ThreadRng
+) -> usize {
+    let mut actions: Vec<usize> = (0..q_values[0].len()).collect();
+
+    if rng.gen::<f32>() < epsilon {
+        *actions.choose(rng).unwrap()
+    } else {
+        let best_action = actions
+            .iter()
+            .max_by(|&&a, &&b| q_values[state][a].partial_cmp(&q_values[state][b]).unwrap())
+            .unwrap();
+        *best_action
+    }
 }
