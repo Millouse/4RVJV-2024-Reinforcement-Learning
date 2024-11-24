@@ -4,6 +4,7 @@ pub mod algorithms {
     pub mod q_learning;
     pub mod monte_carlo_exploring_starts;
     pub mod sarsa;
+    pub mod dyna_q;
 }
 
 pub mod contracts {
@@ -16,6 +17,7 @@ pub mod envs {
     pub mod grid_world;
     pub mod secret;
     pub mod mounty_hall_3;
+    pub mod rock_paper_scissors;
 }
 
 fn main() {
