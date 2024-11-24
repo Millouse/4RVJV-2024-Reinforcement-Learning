@@ -3,36 +3,34 @@ use crate::contracts::mdp_env::MDPEnv;
 use crate::contracts::model_free_env::ModelFreeEnv;
 
 pub struct MontyHall {
-    current_door: usize,  // La porte choisie par le joueur
-    prize_door: usize,    // La porte contenant le prix
-    host_door: usize,     // La porte que l'animateur révèle
-    game_over: bool,      // Indique si le jeu est terminé
+    current_door: usize,
+    prize_door: usize,
+    host_door: usize,
+    game_over: bool,
 }
 
 impl MDPEnv for MontyHall {
     fn num_states() -> usize {
-        3 * 3 * 2 // 3 portes, 3 portes d'animateur possibles, 2 états (jeu en cours/terminé)
+        3 * 3 * 2 // 3 portes, 3 portes possibles, 2 états
     }
 
     fn num_actions() -> usize {
-        2 // 0: Garder la porte, 1: Changer de porte
+        2
     }
 
     fn num_rewards() -> usize {
-        2 // 0: Perdre, 1: Gagner
+        2
     }
 
     fn reward(index: usize) -> f32 {
         match index {
-            0 => -1.0, // Récompense négative pour une perte
-            1 => 1.0,  // Récompense positive pour une victoire
+            0 => -1.0,
+            1 => 1.0,
             _ => panic!("Invalid reward index"),
         }
     }
 
     fn transition_probability(state: usize, action: usize, next_state: usize, reward_index: usize) -> f32 {
-        // Le Monty Hall Problem a des transitions déterministes basées sur les règles
-        // On simplifie ici pour ne pas définir toutes les combinaisons possibles
         if reward_index == 1 && action == 1 {
             // Transition possible : changer de porte mène au prix
             1.0
@@ -53,7 +51,7 @@ impl ModelFreeEnv for MontyHall {
         let host_door = (0..3)
             .filter(|&d| d != prize_door && d != current_door)
             .next()
-            .unwrap(); // L'animateur révèle une porte sans prix et non choisie
+            .unwrap();
         MontyHall {
             current_door,
             prize_door,
@@ -82,7 +80,7 @@ impl ModelFreeEnv for MontyHall {
     }
 
     fn num_actions() -> usize {
-        2 // 0: Garder la porte, 1: Changer de porte
+        2
     }
 
     fn reset(&mut self) {

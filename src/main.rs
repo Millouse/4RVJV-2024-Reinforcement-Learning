@@ -82,18 +82,31 @@ fn main() {
     }
     println!();
 
-    //println!("Policy Iteration on Monty Hall Problem...");
+    //println!("SARSA on LineWorld(5)...");
 
-    // Exécution de l'algorithme Policy Iteration pour le Monty Hall Problem
+    //let q_values = algorithms::sarsa::sarsa::<envs::line_world::LineWorld<5>>(
+    //    10_000, // Nombre d'épisodes
+    //    0.1,    // Taux d'apprentissage (alpha)
+    //    0.999,  // Facteur de discount (gamma)
+    //    1.0,    // Exploration initiale (epsilon)
+    //);
+
+    //for (s, q_s) in q_values.iter().enumerate() {
+    //    for (a, q) in q_s.iter().enumerate() {
+    //        println!("Q(s={}, a={}) = {}", s, a, q);
+    //    }
+    //}
+    //println!("SARSA terminé !");
+
+   // println!("Policy Iteration on Monty Hall Problem...");
+     //Exécution de l'algorithme Policy Iteration pour le Monty Hall Problem
     //let (pi, value_function) = algorithms::policy_iteration::policy_iteration::<envs::mounty_hall_3::MontyHall>(0.999, 0.001);
-
-    // Affichage de la politique optimale pour chaque état
+     //Affichage de la politique optimale pour chaque état
     //println!("Optimal Policy (π):");
     //for (s, a) in pi.iter().enumerate() {
     //    println!("π(s={}) = {}", s, a);
-    //}
 
-    //println!();
+    //println!();}
 
     // Affichage de la fonction de valeur optimale pour chaque état
     //println!("Optimal Value Function (V):");
